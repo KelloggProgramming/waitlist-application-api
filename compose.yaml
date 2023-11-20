@@ -1,1 +1,7 @@
 services:
+  waitlistApi:
+    container_name: waitlist_api_dev
+    image: waitlist-api
+    build: .
+    ports:
+      - 8080:8080
