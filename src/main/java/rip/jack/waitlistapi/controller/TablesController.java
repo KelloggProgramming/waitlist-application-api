@@ -1,18 +1,16 @@
 package rip.jack.waitlistapi.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.ast.tree.from.TableAliasResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rip.jack.waitlistapi.domain.TableRecord;
 import rip.jack.waitlistapi.model.Table;
-import rip.jack.waitlistapi.repository.TablesRepository;
+import rip.jack.waitlistapi.repository.TableRepository;
 import rip.jack.waitlistapi.service.TableService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,12 +18,12 @@ import java.util.List;
 @RequestMapping("/tables")
 @RequiredArgsConstructor
 public class TablesController {
-    private final TablesRepository tablesRepository;
+    private final TableRepository tableRepository;
     private final TableService tableService;
 
     @GetMapping("/available")
     public List<TableRecord> getAvailableTables() {
-        return tablesRepository.findAll();
+        return tableRepository.findAll();
     }
 
     @GetMapping("/in-use")

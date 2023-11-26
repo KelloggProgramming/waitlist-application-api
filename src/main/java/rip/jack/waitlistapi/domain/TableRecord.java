@@ -3,8 +3,10 @@ package rip.jack.waitlistapi.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.UUID;
 
 @Data
@@ -12,10 +14,17 @@ import java.util.UUID;
 @Table(name = "tables")
 public class TableRecord {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false, unique = true)
     private int tableNumber;
-//    @Column(name = "tableType")
+
+    //    @Column(name = "tableType")
 //    private String tableType;
-    private boolean inUse;
+    @Column(nullable = false)
+    private boolean inUse = false;
+
+    @ManyToMany(mappedBy = "tables")
+    private Collection<ReservationRecord> reservations;
 }
