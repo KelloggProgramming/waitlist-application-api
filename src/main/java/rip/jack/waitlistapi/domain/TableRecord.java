@@ -6,6 +6,7 @@ import lombok.Data;
 import org.checkerframework.common.aliasing.qual.Unique;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -22,8 +23,12 @@ public class TableRecord {
 
     //    @Column(name = "tableType")
 //    private String tableType;
+
     @Column(nullable = false)
     private boolean inUse = false;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime inUseStartTime;
 
     @ManyToMany(mappedBy = "tables")
     private Collection<ReservationRecord> reservations;

@@ -1,13 +1,18 @@
 package rip.jack.waitlistapi.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rip.jack.waitlistapi.domain.ReservationRecord;
 import rip.jack.waitlistapi.domain.TableRecord;
+import rip.jack.waitlistapi.model.Table;
 import rip.jack.waitlistapi.repository.TableRepository;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -15,25 +20,46 @@ import java.util.UUID;
 public class TableService {
     private final TableRepository tableRepository;
 
-    public void createTable(Integer tableNumber) {
+    public TableRecord createTable(Integer tableNumber) {
         TableRecord newTableRecord = new TableRecord();
         newTableRecord.setTableNumber(tableNumber);
 
         tableRepository.save(newTableRecord);
+
+        return newTableRecord;
     }
 
-    public void createReservation() {
-        ReservationRecord reservation = new ReservationRecord();
-        reservation.setName("Jack Bob Jo");
-        reservation.setScheduledTime(LocalDateTime.of(2023,11,23,4,13,30));
+    public TableRecord setTableInUse(UUID tableUuid) {
+        Optional<TableRecord> optionalTableRecord = tableRepository.findById(tableUuid);
 
-        TableRecord table = new TableRecord();
-        table.setId(UUID.fromString("63695070-8c51-449e-8593-0ca7012f3b66"));
+        if(optionalTableRecord.isEmpty()) {
+            throw new EntityNotFoundException("Could not find original table record to update");
+        }
 
-        reservation.setTables(
-                Collections.singletonList(
-                        table
-                )
-        );
+        TableRecord tableRecord = optionalTableRecord.get();
+
+        tableRecord.setInUse(true);
+        tableRecord.setInUseStartTime(LocalDateTime.now(ZoneId.of("UTC")));
+
+        tableRepository.save(tableRecord);
+
+        return tableRecord;
+    }
+
+    public TableRecord setTableAvailable(UUID tableUuid) {
+        Optional<TableRecord> optionalTableRecord = tableRepository.findById(tableUuid);
+
+        if(optionalTableRecord.isEmpty()) {
+            throw new EntityNotFoundException("Could not find original table record to update");
+        }
+
+        TableRecord tableRecord = optionalTableRecord.get();
+
+        tableRecord.setInUse(false);
+        tableRecord.setInUseStartTime(null);
+
+        tableRepository.save(tableRecord);
+
+        return tableRecord;
     }
 }

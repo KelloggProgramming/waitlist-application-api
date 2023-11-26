@@ -13,35 +13,43 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/tables")
 @RequiredArgsConstructor
 public class TablesController {
     private final TableRepository tableRepository;
+
     private final TableService tableService;
 
-    @GetMapping("/available")
-    public List<TableRecord> getAvailableTables() {
+    @GetMapping("")
+    public List<TableRecord> getAllAvailableTables() {
         return tableRepository.findAll();
     }
 
+    @GetMapping("/available")
+    public List<TableRecord> getAvailableTables() {
+        return tableRepository.findTableRecordsByInUseIsFalse();
+    }
+
+    @GetMapping("/available/{id}")
+    public TableRecord setTableAvailable(@PathVariable("id") UUID uuid) {
+        return tableService.setTableAvailable(uuid);
+    }
+
     @GetMapping("/in-use")
-    public List<Table> getInUseTables() {
-        return new ArrayList<>(Collections.singletonList(
-                new Table(3, "small boi", LocalDate.of(2023, 1, 23))
-        ));
+    public List<TableRecord> getInUseTables() {
+        return tableRepository.findTableRecordsByInUseIsTrue();
+    }
+
+    @GetMapping("/in-use/{id}")
+    public TableRecord setTableInUse(@PathVariable("id") UUID uuid) {
+        return tableService.setTableInUse(uuid);
     }
 
     @PutMapping("/create/{table_id}")
-    public ResponseEntity getInUseTables(@PathVariable("table_id") Integer tableId) {
-        tableService.createTable(tableId);
-        return new ResponseEntity(HttpStatus.OK);
-
-
-
-//        return new ArrayList<>(Collections.singletonList(
-//                new Table(3, "small boi", LocalDate.of(2023, 1, 23))
-//        ));
+    public TableRecord getInUseTables(@PathVariable("table_id") Integer tableId) {
+        return tableService.createTable(tableId);
     }
 }
