@@ -1,6 +1,7 @@
 package rip.jack.waitlistapi.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class TablesController {
 
     @GetMapping("")
     public List<TableRecord> getAllAvailableTables() {
-        return tableRepository.findAll();
+        return tableRepository.findAll(Sort.by(Sort.Direction.ASC, "inUseStartTime"));
     }
 
     @GetMapping("/available")
@@ -40,7 +41,7 @@ public class TablesController {
 
     @GetMapping("/in-use")
     public List<TableRecord> getInUseTables() {
-        return tableRepository.findTableRecordsByInUseIsTrue();
+        return tableRepository.findTableRecordsByInUseIsTrue(Sort.by(Sort.Direction.ASC, "inUseStartTime"));
     }
 
     @GetMapping("/in-use/{id}")

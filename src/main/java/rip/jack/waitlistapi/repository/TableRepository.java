@@ -1,6 +1,7 @@
 package rip.jack.waitlistapi.repository;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,9 +16,12 @@ import java.util.UUID;
 @Transactional
 public interface TableRepository extends JpaRepository<TableRecord, UUID> {
 
-    List<TableRecord> findAll();
+    List<TableRecord> findAll(Sort sort);
+
     Optional<TableRecord> findById(UUID uuid);
-    List<TableRecord> findTableRecordsByInUseIsTrue();
+
+    List<TableRecord> findTableRecordsByInUseIsTrue(Sort sort);
+
     List<TableRecord> findTableRecordsByInUseIsFalse();
 
     @Modifying
