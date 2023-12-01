@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rip.jack.waitlistapi.domain.TableRecord;
-import rip.jack.waitlistapi.model.Table;
+import rip.jack.waitlistapi.enums.TableStatus;
 import rip.jack.waitlistapi.repository.TableRepository;
 import rip.jack.waitlistapi.service.TableService;
 
@@ -31,7 +31,7 @@ public class TablesController {
 
     @GetMapping("/available")
     public List<TableRecord> getAvailableTables() {
-        return tableRepository.findTableRecordsByInUseIsFalse();
+        return tableRepository.findTableRecordsByStatusIs(TableStatus.AVAILABLE, Sort.by(Sort.Direction.ASC));
     }
 
     @GetMapping("/available/{id}")
@@ -41,7 +41,7 @@ public class TablesController {
 
     @GetMapping("/in-use")
     public List<TableRecord> getInUseTables() {
-        return tableRepository.findTableRecordsByInUseIsTrue(Sort.by(Sort.Direction.ASC, "inUseStartTime"));
+        return tableRepository.findTableRecordsByStatusIs(TableStatus.INUSE, Sort.by(Sort.Direction.ASC));
     }
 
     @GetMapping("/in-use/{id}")

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rip.jack.waitlistapi.domain.ReservationRecord;
 import rip.jack.waitlistapi.domain.TableRecord;
-import rip.jack.waitlistapi.model.Table;
+import rip.jack.waitlistapi.enums.TableStatus;
 import rip.jack.waitlistapi.repository.TableRepository;
 
 import javax.swing.text.html.Option;
@@ -23,6 +23,7 @@ public class TableService {
     public TableRecord createTable(Integer tableNumber) {
         TableRecord newTableRecord = new TableRecord();
         newTableRecord.setTableNumber(tableNumber);
+        newTableRecord.setStatus(TableStatus.UNKNOWN);
 
         tableRepository.save(newTableRecord);
 
@@ -38,8 +39,7 @@ public class TableService {
 
         TableRecord tableRecord = optionalTableRecord.get();
 
-        tableRecord.setInUse(true);
-        tableRecord.setInUseStartTime(LocalDateTime.now(ZoneId.of("UTC")));
+        tableRecord.setStatus(TableStatus.INUSE);
 
         tableRepository.save(tableRecord);
 
@@ -55,11 +55,11 @@ public class TableService {
 
         TableRecord tableRecord = optionalTableRecord.get();
 
-        tableRecord.setInUse(false);
-        tableRecord.setInUseStartTime(null);
+        tableRecord.setStatus(TableStatus.AVAILABLE);
 
         tableRepository.save(tableRecord);
 
         return tableRecord;
     }
+
 }
