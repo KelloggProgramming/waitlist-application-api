@@ -18,7 +18,7 @@ import java.util.UUID;
 @Transactional
 public interface TableRepository extends JpaRepository<TableRecord, UUID> {
 
-    List<TableRecord> findAll(Sort sort);
+//    List<TableRecord> findAll(Sort sort);
 
     Optional<TableRecord> findById(UUID uuid);
 
@@ -27,4 +27,5 @@ public interface TableRepository extends JpaRepository<TableRecord, UUID> {
     @Modifying
     @Query("update TableRecord t set t.status = :tableStatus where t.id = :id")
     void updateTableRecordById(UUID id, TableStatus tableStatus);
+
 }

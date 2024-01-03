@@ -6,8 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rip.jack.waitlistapi.domain.TableRecord;
+import rip.jack.waitlistapi.domain.TableType;
 import rip.jack.waitlistapi.enums.TableStatus;
+import rip.jack.waitlistapi.model.Table;
 import rip.jack.waitlistapi.repository.TableRepository;
+import rip.jack.waitlistapi.repository.TableTypeRepository;
 import rip.jack.waitlistapi.service.TableService;
 
 import java.time.LocalDate;
@@ -17,16 +20,18 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/tables")
 @RequiredArgsConstructor
 public class TablesController {
     private final TableRepository tableRepository;
+    private final TableTypeRepository tableTypeRepository;
 
     private final TableService tableService;
 
     @GetMapping("")
     public List<TableRecord> getAllAvailableTables() {
-        return tableRepository.findAll(Sort.by(Sort.Direction.ASC, "inUseStartTime"));
+        return tableRepository.findAll();
     }
 
     @GetMapping("/available")
@@ -52,5 +57,21 @@ public class TablesController {
     @PutMapping("/create/{table_id}")
     public TableRecord getInUseTables(@PathVariable("table_id") Integer tableId) {
         return tableService.createTable(tableId);
+    }
+
+    @PostMapping
+    public TableRecord createTable(@RequestBody TableRecord tableRecord) {
+//        new TableRecord(table);
+        return tableRepository.save(tableRecord);
+    }
+
+    @GetMapping("/types")
+    public List<TableType> listTableTypes() {
+        return tableTypeRepository.findAll();
+    }
+
+    @PostMapping("/types")
+    public TableType createTableType(@RequestBody TableType tableType) {
+        return tableTypeRepository.save(tableType);
     }
 }
