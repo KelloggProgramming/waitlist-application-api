@@ -1,10 +1,15 @@
 package rip.jack.waitlistapi.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
-import rip.jack.waitlistapi.model.Table;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -12,7 +17,6 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 public class TableType {
     @Id

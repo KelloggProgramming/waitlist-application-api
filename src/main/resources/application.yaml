@@ -1,0 +1,18 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+        hbm2ddl: dev-data.sql
+    defer-datasource-initialization: true
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  sql:
+    init:
+      mode: always
+
+

@@ -1,6 +1,5 @@
 package rip.jack.waitlistapi.repository;
 
-import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +19,7 @@ public interface TableRepository extends JpaRepository<TableRecord, UUID> {
 
 //    List<TableRecord> findAll(Sort sort);
 
-    Optional<TableRecord> findById(UUID uuid);
+    Optional<TableRecord> findById(Integer tableId);
 
     List<TableRecord> findTableRecordsByStatusIs(TableStatus status, Sort sort);
 

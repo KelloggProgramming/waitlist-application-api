@@ -2,22 +2,23 @@ package rip.jack.waitlistapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import rip.jack.waitlistapi.domain.TableRecord;
 import rip.jack.waitlistapi.domain.TableType;
 import rip.jack.waitlistapi.enums.TableStatus;
-import rip.jack.waitlistapi.model.Table;
 import rip.jack.waitlistapi.repository.TableRepository;
 import rip.jack.waitlistapi.repository.TableTypeRepository;
 import rip.jack.waitlistapi.service.TableService;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @CrossOrigin
@@ -25,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TablesController {
     private final TableRepository tableRepository;
+
     private final TableTypeRepository tableTypeRepository;
 
     private final TableService tableService;
@@ -40,8 +42,8 @@ public class TablesController {
     }
 
     @GetMapping("/available/{id}")
-    public TableRecord setTableAvailable(@PathVariable("id") UUID uuid) {
-        return tableService.setTableAvailable(uuid);
+    public TableRecord setTableAvailable(@PathVariable("id") Integer tableId) {
+        return tableService.setTableStatus(tableId, TableStatus.AVAILABLE);
     }
 
     @GetMapping("/in-use")
@@ -50,8 +52,8 @@ public class TablesController {
     }
 
     @GetMapping("/in-use/{id}")
-    public TableRecord setTableInUse(@PathVariable("id") UUID uuid) {
-        return tableService.setTableInUse(uuid);
+    public TableRecord setTableInUse(@PathVariable("id") Integer tableId) {
+        return tableService.setTableStatus(tableId, TableStatus.INUSE);
     }
 
     @PutMapping("/create/{table_id}")
@@ -61,7 +63,7 @@ public class TablesController {
 
     @PostMapping
     public TableRecord createTable(@RequestBody TableRecord tableRecord) {
-//        new TableRecord(table);
+        tableRecord.setStatusUpdated(LocalDateTime.now());
         return tableRepository.save(tableRecord);
     }
 
