@@ -32,41 +32,30 @@ public class TablesController {
 
     private final TableService tableService;
 
-    @GetMapping("")
+    @GetMapping
     public List<TableRecord> getAllAvailableTables(@RequestParam(name = "status", required = false) TableStatus status) {
 
         return tableService.searchTables(status);
     }
 
-    @GetMapping("/available")
-    public List<TableRecord> getAvailableTables() {
-        return tableRepository.findTableRecordsByStatusIs(TableStatus.AVAILABLE, Sort.by(Sort.Direction.ASC));
+    @GetMapping("/{id}")
+    public TableRecord getAllAvailableTables(@PathVariable("id") Integer tableId) {
+        return tableService.findTableById(tableId);
     }
 
-    @GetMapping("/available/{id}")
-    public TableRecord setTableAvailable(@PathVariable("id") Integer tableId) {
-        return tableService.setTableStatus(tableId, TableStatus.AVAILABLE);
-    }
-
-    @GetMapping("/in-use")
-    public List<TableRecord> getInUseTables() {
-        return tableRepository.findTableRecordsByStatusIs(TableStatus.INUSE, Sort.by(Sort.Direction.ASC));
-    }
-
-    @GetMapping("/in-use/{id}")
-    public TableRecord setTableInUse(@PathVariable("id") Integer tableId) {
-        return tableService.setTableStatus(tableId, TableStatus.INUSE);
-    }
-
-    @PutMapping("/create/{table_id}")
-    public TableRecord getInUseTables(@PathVariable("table_id") Integer tableId) {
-        return tableService.createTable(tableId);
+    @PutMapping("/{id}/status/{tableStatus}")
+    public TableRecord setTableStatusById(@PathVariable("id") Integer tableId, @PathVariable("tableStatus") TableStatus tableStatus) {
+        return tableService.setTableStatus(tableId, tableStatus);
     }
 
     @PostMapping
     public TableRecord createTable(@RequestBody TableRecord tableRecord) {
-        tableRecord.setStatusUpdated(LocalDateTime.now());
-        return tableRepository.save(tableRecord);
+        return tableService.createTableRecord(tableRecord);
+    }
+
+    @PutMapping
+    public TableRecord updateTable(@RequestBody TableRecord tableRecord) {
+        return tableService.updateTableRecord(tableRecord);
     }
 
     @GetMapping("/types")

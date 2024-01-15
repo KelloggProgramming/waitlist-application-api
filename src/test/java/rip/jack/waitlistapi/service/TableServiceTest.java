@@ -29,17 +29,6 @@ public class TableServiceTest {
     private TableService classUnderTest;
 
     @Test
-    void createTableTest() {
-        TableRecord actualTableRecord = classUnderTest.createTable(1);
-
-        when(mockTableRepository.save(any(TableRecord.class))).thenReturn(null);
-
-        verify(mockTableRepository, times(1)).save(any(TableRecord.class));
-        assertEquals(1, actualTableRecord.getTableNumber());
-        assertEquals(TableStatus.UNKNOWN, actualTableRecord.getStatus());
-    }
-
-    @Test
     void setTableStatusTest() {
         Integer tableId = 1;
 

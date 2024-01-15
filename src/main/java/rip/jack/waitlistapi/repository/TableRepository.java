@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import rip.jack.waitlistapi.domain.TableRecord;
 import rip.jack.waitlistapi.enums.TableStatus;
@@ -15,9 +16,9 @@ import java.util.UUID;
 
 @Repository
 @Transactional
-public interface TableRepository extends JpaRepository<TableRecord, UUID> {
+public interface TableRepository extends JpaRepository<TableRecord, Integer> {
 
-    Optional<TableRecord> findById(Integer tableId);
+//    Optional<TableRecord> findById(@NonNull Integer tableId);
 
     List<TableRecord> findTableRecordsByStatusIs(TableStatus status, Sort sort);
 

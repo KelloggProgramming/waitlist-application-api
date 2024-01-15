@@ -1,20 +1,13 @@
 package rip.jack.waitlistapi.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.data.domain.Persistable;
+import org.yaml.snakeyaml.events.Event;
 import rip.jack.waitlistapi.enums.TableStatus;
 
 import java.time.LocalDateTime;
@@ -31,7 +24,21 @@ import java.util.Objects;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"tableNumber"}, name = "unique_table_number")
         })
-public class TableRecord {
+public class TableRecord implements Persistable<Integer> {
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PrePersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
+    }
+
     @Id
     @GeneratedValue
     private Integer id;
