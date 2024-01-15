@@ -49,10 +49,6 @@ public class TableRecord {
     @ToString.Exclude
     private Collection<ReservationRecord> reservations;
 
-    public boolean shouldUpdateStatus(TableRecord otherRecord) {
-        return this.status.equals(otherRecord.getStatus());
-    }
-
     public void updateStatus(TableStatus status) {
         if(this.status != status) {
             this.status = status;
