@@ -7,12 +7,21 @@ import rip.jack.waitlistapi.domain.TableRecord;
 import rip.jack.waitlistapi.enums.TableStatus;
 import rip.jack.waitlistapi.repository.TableRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TableService {
     private final TableRepository tableRepository;
+
+    public List<TableRecord> searchTables(TableStatus status) {
+        if (status == null) {
+            return tableRepository.findAll();
+        } else {
+            return tableRepository.findTableRecordsByStatusIs(status);
+        }
+    }
 
     public TableRecord createTable(Integer tableNumber) {
         TableRecord newTableRecord = new TableRecord();

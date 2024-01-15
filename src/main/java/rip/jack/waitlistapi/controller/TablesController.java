@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rip.jack.waitlistapi.domain.TableRecord;
 import rip.jack.waitlistapi.domain.TableType;
@@ -32,8 +33,9 @@ public class TablesController {
     private final TableService tableService;
 
     @GetMapping("")
-    public List<TableRecord> getAllAvailableTables() {
-        return tableRepository.findAll();
+    public List<TableRecord> getAllAvailableTables(@RequestParam(name = "status", required = false) TableStatus status) {
+
+        return tableService.searchTables(status);
     }
 
     @GetMapping("/available")

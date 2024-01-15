@@ -17,11 +17,11 @@ import java.util.UUID;
 @Transactional
 public interface TableRepository extends JpaRepository<TableRecord, UUID> {
 
-//    List<TableRecord> findAll(Sort sort);
-
     Optional<TableRecord> findById(Integer tableId);
 
     List<TableRecord> findTableRecordsByStatusIs(TableStatus status, Sort sort);
+
+    List<TableRecord> findTableRecordsByStatusIs(TableStatus status);
 
     @Modifying
     @Query("update TableRecord t set t.status = :tableStatus where t.id = :id")

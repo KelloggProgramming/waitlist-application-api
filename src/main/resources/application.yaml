@@ -14,5 +14,6 @@ spring:
   sql:
     init:
       mode: always
+      platform: mariadb
 
 
