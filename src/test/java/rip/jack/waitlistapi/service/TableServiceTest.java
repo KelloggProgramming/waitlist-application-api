@@ -34,7 +34,7 @@ public class TableServiceTest {
 
         TableRecord setupTableRecord = new TableRecord();
         setupTableRecord.setId(tableId);
-        setupTableRecord.setStatus(TableStatus.UNKNOWN);
+        setupTableRecord.updateStatus(TableStatus.UNKNOWN);
 
         when(mockTableRepository.findById(tableId)).thenReturn(Optional.of(setupTableRecord));
         when(mockTableRepository.save(setupTableRecord)).thenReturn(null);

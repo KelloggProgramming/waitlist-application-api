@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
-import org.springframework.data.domain.Persistable;
-import org.yaml.snakeyaml.events.Event;
 import rip.jack.waitlistapi.enums.TableStatus;
 
 import java.time.LocalDateTime;
@@ -24,20 +22,7 @@ import java.util.Objects;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"tableNumber"}, name = "unique_table_number")
         })
-public class TableRecord implements Persistable<Integer> {
-    @Transient
-    private boolean isNew = true;
-
-    @Override
-    public boolean isNew() {
-        return isNew;
-    }
-
-    @PrePersist
-    @PostLoad
-    void markNotNew() {
-        this.isNew = false;
-    }
+public class TableRecord {
 
     @Id
     @GeneratedValue
@@ -64,9 +49,15 @@ public class TableRecord implements Persistable<Integer> {
     @ToString.Exclude
     private Collection<ReservationRecord> reservations;
 
-    public void setStatus(TableStatus status) {
-        this.status = status;
-        this.setStatusUpdated(LocalDateTime.now(ZoneId.of("UTC")));
+    public boolean shouldUpdateStatus(TableRecord otherRecord) {
+        return this.status.equals(otherRecord.getStatus());
+    }
+
+    public void updateStatus(TableStatus status) {
+        if(this.status != status) {
+            this.status = status;
+            this.setStatusUpdated(LocalDateTime.now(ZoneId.of("UTC")));
+        }
     }
 
     @Override

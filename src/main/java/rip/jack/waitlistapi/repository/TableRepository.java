@@ -18,10 +18,6 @@ import java.util.UUID;
 @Transactional
 public interface TableRepository extends JpaRepository<TableRecord, Integer> {
 
-//    Optional<TableRecord> findById(@NonNull Integer tableId);
-
-    List<TableRecord> findTableRecordsByStatusIs(TableStatus status, Sort sort);
-
     List<TableRecord> findTableRecordsByStatusIs(TableStatus status);
 
     @Modifying

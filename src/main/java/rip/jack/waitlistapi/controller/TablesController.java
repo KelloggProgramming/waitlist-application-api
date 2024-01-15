@@ -26,15 +26,12 @@ import java.util.List;
 @RequestMapping("/tables")
 @RequiredArgsConstructor
 public class TablesController {
-    private final TableRepository tableRepository;
-
     private final TableTypeRepository tableTypeRepository;
 
     private final TableService tableService;
 
     @GetMapping
     public List<TableRecord> getAllAvailableTables(@RequestParam(name = "status", required = false) TableStatus status) {
-
         return tableService.searchTables(status);
     }
 

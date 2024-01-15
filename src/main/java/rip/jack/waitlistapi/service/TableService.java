@@ -4,13 +4,13 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import rip.jack.waitlistapi.domain.TableRecord;
 import rip.jack.waitlistapi.enums.TableStatus;
 import rip.jack.waitlistapi.repository.TableRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,13 +30,7 @@ public class TableService {
     }
 
     public TableRecord findTableById(Integer tableId) {
-        Optional<TableRecord> optionalTableRecord = tableRepository.findById(tableId);
-
-        if(optionalTableRecord.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
-        return optionalTableRecord.get();
+        return findTableRecordById(tableId);
     }
 
     public TableRecord createTableRecord(TableRecord tableRecord) {
@@ -51,21 +45,14 @@ public class TableService {
     }
 
     public TableRecord updateTableRecord(TableRecord tableRecord) {
-        tableRecord.setNew(false);
+        TableRecord dbTableRecord = findTableRecordById(tableRecord.getId());
 
-        assert tableRecord.getId() != null;
-        Optional<TableRecord> optionalDbTableRecord = tableRepository.findById(tableRecord.getId());
 
-        if(optionalDbTableRecord.isEmpty()) {
-            throw new EntityNotFoundException("Could not find original table to update.");
-        }
-
-        TableRecord dbTableRecord = optionalDbTableRecord.get();
-
+        //TODO Find a much better way to do this
         if(dbTableRecord.getStatus().equals(tableRecord.getStatus())) {
             tableRecord.setStatusUpdated(dbTableRecord.getStatusUpdated());
         }else {
-            tableRecord.setStatusUpdated(LocalDateTime.now());
+            tableRecord.setStatusUpdated(LocalDateTime.now(ZoneId.of("UTC")));
         }
 
         tableRepository.save(tableRecord);
@@ -76,21 +63,25 @@ public class TableService {
     }
 
     public TableRecord setTableStatus(Integer tableId, TableStatus status) {
-        Optional<TableRecord> optionalTableRecord = tableRepository.findById(tableId);
+        TableRecord tableRecord = findTableRecordById(tableId);
 
-        if (optionalTableRecord.isEmpty()) {
-            throw new EntityNotFoundException("Could not find original table record to update");
-        }
-
-        TableRecord tableRecord = optionalTableRecord.get();
-
-        tableRecord.setStatus(status);
+        tableRecord.updateStatus(status);
 
         tableRepository.save(tableRecord);
 
         log.info("Updated table status {}:{}", tableRecord.getId(), status);
 
         return tableRecord;
+    }
+
+    private TableRecord findTableRecordById(Integer tableId) {
+        Optional<TableRecord> optionalTableRecord = tableRepository.findById(tableId);
+
+        if (optionalTableRecord.isEmpty()) {
+            throw new EntityNotFoundException("Could not find original table record to update");
+        }
+
+        return optionalTableRecord.get();
     }
 
 }
