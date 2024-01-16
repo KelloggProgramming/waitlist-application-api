@@ -37,7 +37,7 @@ public class TablesController {
 
     @GetMapping("/{id}")
     public TableRecord getAllAvailableTables(@PathVariable("id") Integer tableId) {
-        return tableService.findTableById(tableId);
+        return tableService.findTableRecordById(tableId);
     }
 
     @PutMapping("/{id}/status/{tableStatus}")

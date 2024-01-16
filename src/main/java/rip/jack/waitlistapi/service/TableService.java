@@ -29,12 +29,18 @@ public class TableService {
         }
     }
 
-    public TableRecord findTableById(Integer tableId) {
-        return findTableRecordById(tableId);
+    public TableRecord findTableRecordById(Integer tableId) {
+        Optional<TableRecord> optionalTableRecord = tableRepository.findById(tableId);
+
+        if (optionalTableRecord.isEmpty()) {
+            throw new EntityNotFoundException("Could not find original table record to update");
+        }
+
+        return optionalTableRecord.get();
     }
 
     public TableRecord createTableRecord(TableRecord tableRecord) {
-        tableRecord.setStatusUpdated(LocalDateTime.now());
+        tableRecord.setStatusUpdated(LocalDateTime.now(ZoneId.of("UTC")));
         tableRecord.setId(null);
 
         tableRepository.save(tableRecord);
@@ -44,22 +50,22 @@ public class TableService {
         return tableRecord;
     }
 
-    public TableRecord updateTableRecord(TableRecord tableRecord) {
-        TableRecord dbTableRecord = findTableRecordById(tableRecord.getId());
+    public TableRecord updateTableRecord(TableRecord editedTableRecord) {
+        TableRecord dbTableRecord = findTableRecordById(editedTableRecord.getId());
 
 
         //TODO Find a much better way to do this
-        if(dbTableRecord.getStatus().equals(tableRecord.getStatus())) {
-            tableRecord.setStatusUpdated(dbTableRecord.getStatusUpdated());
+        if(dbTableRecord.getStatus().equals(editedTableRecord.getStatus())) {
+            editedTableRecord.setStatusUpdated(dbTableRecord.getStatusUpdated());
         }else {
-            tableRecord.setStatusUpdated(LocalDateTime.now(ZoneId.of("UTC")));
+            editedTableRecord.setStatusUpdated(LocalDateTime.now(ZoneId.of("UTC")));
         }
 
-        tableRepository.save(tableRecord);
+        tableRepository.save(editedTableRecord);
 
-        log.info("Updated table ID {}", tableRecord.getId());
+        log.info("Updated table ID {}", editedTableRecord.getId());
 
-        return tableRecord;
+        return editedTableRecord;
     }
 
     public TableRecord setTableStatus(Integer tableId, TableStatus status) {
@@ -72,16 +78,6 @@ public class TableService {
         log.info("Updated table status {}:{}", tableRecord.getId(), status);
 
         return tableRecord;
-    }
-
-    private TableRecord findTableRecordById(Integer tableId) {
-        Optional<TableRecord> optionalTableRecord = tableRepository.findById(tableId);
-
-        if (optionalTableRecord.isEmpty()) {
-            throw new EntityNotFoundException("Could not find original table record to update");
-        }
-
-        return optionalTableRecord.get();
     }
 
 }
