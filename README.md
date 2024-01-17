@@ -2,6 +2,14 @@
 
 ## Docker image
 
+### Required Dependencies
+
+- MariaDb database
+
+### Ports
+
+Runs on default port 8080
+
 ### Environment Variables
 
 | variable                   | required | options                   |
