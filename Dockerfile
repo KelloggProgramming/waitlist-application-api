@@ -1,5 +1,5 @@
-#FROM gradle:8.5.0-jdk17-alpine as builder
-FROM arm64v8/gradle:8.5.0-jdk17 as builder
+FROM gradle:8.5.0-jdk17-alpine as builder
+#FROM arm64v8/gradle:8.5.0-jdk17 as builder
 
 WORKDIR /app
 
