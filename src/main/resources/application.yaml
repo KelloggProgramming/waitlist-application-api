@@ -16,4 +16,12 @@ spring:
       mode: always
       platform: mariadb
 
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+
 
